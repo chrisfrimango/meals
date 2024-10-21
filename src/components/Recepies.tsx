@@ -15,6 +15,12 @@ const Title = styled.h1`
   margin-bottom: 1rem;
 `;
 
+const Input = styled.input`
+  font-size: 1rem;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+`;
+
 const RecipeContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -71,13 +77,14 @@ interface IRecipes {
   meals: IMeal[];
 }
 
-const Recepies = () => {
+const Recepies: React.FC = () => {
   const [recipes, setRecipes] = useState<IRecipe[]>([]);
+  const [search, setSearch] = useState("");
 
   const fetchRecipes = async (): Promise<IRecipes | undefined> => {
     try {
       const response = await fetch(
-        "https://www.themealdb.com/api/json/v1/1/search.php?f=g"
+        `https://www.themealdb.com/api/json/v1/1/search.php?f=${search}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -121,11 +128,16 @@ const Recepies = () => {
 
   useEffect(() => {
     printRecipes();
-  }, []);
+  }, [search]);
 
   return (
     <>
       <Title>Recepies</Title>
+      <Input
+        type="text"
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Search for a recipe"
+      />
       <Container>
         {recipes.map((recipe) => (
           <RecipeContainer key={recipe.title}>
